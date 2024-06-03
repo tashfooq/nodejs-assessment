@@ -27,7 +27,7 @@ Decided to use **nodemon** instead of something like **ts-node-dev** for hot rel
 
 ### Using promises from fs module instead of callbacks
 
-So that we can use async/await syntax and avoid callback hell. Also, it makes the code easier to read and understand with cleaner error handling.
+So that we can use async/await syntax and avoid callback hell. Also, it makes the code easier to read and understand with cleaner error handling
 
 ### Moving file reading logic to userService.ts
 
