@@ -4,7 +4,11 @@
   "description": "This project is the assessment for Nodejs developers",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon src/index.js",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node dist/index.js",
+    "start:dev": "nodemon -e ts -w ./src -x npm run serve",
+    "serve": "ts-node src/index.ts",
     "test": "jest",
     "prepare": "husky"
   },
