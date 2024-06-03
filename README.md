@@ -31,4 +31,4 @@ So that we can use async/await syntax and avoid callback hell. Also, it makes th
 
 ### Moving file reading logic to userService.ts
 
-This way it's much cleaner than having everything in the controller
+Didn't want all the logic to be in the controller
