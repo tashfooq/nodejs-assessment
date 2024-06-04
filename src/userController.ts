@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import { getUsers, saveUsers } from "./userService";
 import { IParams } from "./types/params";
 import { User, UserWithId } from "./types/user";
+import { invalidUserId, userNotFound } from "./constants";
 
 export const getAllUsers = async (req: Request, res: Response) => {
   const users = await getUsers();
-  // maybe some error handling here
   if (users.length > 0) {
     res.status(200).json(users);
   } else {
@@ -25,12 +25,17 @@ export const getUserById = async (req: Request<IParams>, res: Response) => {
   const users = await getUsers();
   const userId = parseInt(req.params.id);
 
+  if (!userId) {
+    res.status(400).json({ error: invalidUserId });
+    return;
+  }
+
   const user = users.find((u: UserWithId) => u.id === userId);
 
   if (user) {
     res.json(user);
   } else {
-    res.status(404).json({ error: "User not found" });
+    res.status(404).json({ error: userNotFound });
   }
 };
 
@@ -40,6 +45,12 @@ export const updateUser = async (
 ) => {
   const users = await getUsers();
   const userId = parseInt(req.params.id);
+
+  if (!userId) {
+    res.status(400).json({ error: invalidUserId });
+    return;
+  }
+
   const { name, email, address } = req.body;
 
   const userIndex = users.findIndex((u: UserWithId) => u.id === userId);
@@ -55,13 +66,18 @@ export const updateUser = async (
     await saveUsers(updatedUsers);
     res.json(updatedUser);
   } else {
-    res.status(404).json({ error: "User not found" });
+    res.status(404).json({ error: userNotFound });
   }
 };
 
 export const deleteUser = async (req: Request<IParams>, res: Response) => {
   const users = await getUsers();
   const userId = parseInt(req.params.id);
+
+  if (!userId) {
+    res.status(400).json({ error: invalidUserId });
+    return;
+  }
 
   const userIndex = users.findIndex((u: UserWithId) => u.id === userId);
 
@@ -72,6 +88,6 @@ export const deleteUser = async (req: Request<IParams>, res: Response) => {
     await saveUsers(updatedUsers);
     res.json({ message: "User deleted successfully" });
   } else {
-    res.status(404).json({ error: "User not found" });
+    res.status(404).json({ error: userNotFound });
   }
 };
