@@ -13,8 +13,7 @@ export const createUser = async (req: Request<{}, {}, User>, res: Response) => {
   const { name, email, address } = req.body;
   const users = await getUsers();
   const newUser = { id: users.length + 1, name, email, address };
-  users.push(newUser);
-  await saveUsers(users);
+  await saveUsers([...users, newUser]);
   res.status(201).json(newUser);
 };
 
@@ -49,30 +48,26 @@ export const updateUser = async (
       updatedUser,
       ...users.slice(userIndex + 1),
     ];
-    saveUsers(updatedUsers);
+    await saveUsers(updatedUsers);
     res.json(updatedUser);
   } else {
     res.status(404).json({ error: "User not found" });
   }
 };
-//
-// const deleteUser = (req, res) => {
-//   const users = getUsers();
-//   const userId = parseInt(req.params.id);
-//   let user;
-//
-//   for (let i = 0; i < users.length; i++) {
-//     if (users[i].id === userId) {
-//       user = users[i];
-//       break;
-//     }
-//   }
-//
-//   if (user) {
-//     const updatedUsers = users.filter((u) => u.id !== userId);
-//     saveUsers(updatedUsers);
-//     res.json({ message: "User deleted successfully" });
-//   } else {
-//     res.status(404).json({ error: "User not found" });
-//   }
-// };
+
+export const deleteUser = async (req: Request<IParams>, res: Response) => {
+  const users = await getUsers();
+  const userId = parseInt(req.params.id);
+
+  const userIndex = users.findIndex((u: UserWithId) => u.id === userId);
+
+  if (userIndex !== -1) {
+    const updatedUsers = users
+      .filter((u: UserWithId) => u.id !== userId)
+      .map((u: UserWithId, index: number) => ({ ...u, id: index + 1 }));
+    await saveUsers(updatedUsers);
+    res.json({ message: "User deleted successfully" });
+  } else {
+    res.status(404).json({ error: "User not found" });
+  }
+};

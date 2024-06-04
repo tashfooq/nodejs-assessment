@@ -46,3 +46,11 @@ Treating it as a database file and not part of the source code
 ### Taking Test Driven Development approach
 
 Decided to write tests first with expected outcomes to see if existing logic even works. Even if the existing logic is correct it may still be written better. Need to ensure that the outcomes are the same after refactoring in this case as well.
+
+### Creating a new list of users for createUser instead of modifying the existing one
+
+Makes the function more pure and easier to test
+
+### Refactored the delete to use serial id
+
+So that the objects in the file are not shifted around and the id is unique
