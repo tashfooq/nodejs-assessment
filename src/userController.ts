@@ -3,10 +3,14 @@ import { getUsers, saveUsers } from "./userService";
 import { IParams } from "./types/params";
 import { User, UserWithId } from "./types/user";
 
-export const getAllUsers = async (res: Response) => {
+export const getAllUsers = async (req: Request, res: Response) => {
   const users = await getUsers();
   // maybe some error handling here
-  res.json(users);
+  if (users.length > 0) {
+    res.status(200).json(users);
+  } else {
+    res.status(404).json({ error: "No users found" });
+  }
 };
 
 export const createUser = async (req: Request<{}, {}, User>, res: Response) => {
