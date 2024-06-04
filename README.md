@@ -4,10 +4,13 @@
   - for use in build process to compile Javascript files to be used in productions
 - ts-node
   - executing Typescript code directly without prior compilation into Javascript used in development for quick iteration and testing
-- @types/node
-- @types/express
 - dotenv
   - for loading environment variables from a .env file for sensitive information like port number, database credentials, etc
+- ts-jest
+  - for testing Typescript code with Jest
+- @types/node
+- @types/express
+- @types/jest
 
 # Scripts
 
@@ -32,3 +35,7 @@ So that we can use async/await syntax and avoid callback hell. Also, it makes th
 ### Moving file reading logic to userService.ts
 
 Didn't want all the logic to be in the controller
+
+### Moving users.json to data folder
+
+Treating it as a database file and not part of the source code
