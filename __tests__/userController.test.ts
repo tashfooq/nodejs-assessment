@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createUser, getUserById } from "../src/userController";
+import { createUser, getUserById, updateUser } from "../src/userController";
 import { twoUsersStub } from "./users.stub";
 
 // mocking out the userService module
@@ -18,6 +18,7 @@ beforeEach(() => {
 
 import { getUsers, saveUsers } from "../src/userService";
 import { IParams } from "../src/types/params";
+import { User } from "../src/types/user";
 
 describe("userController", () => {
   it("should create a new user", async () => {
@@ -73,8 +74,44 @@ describe("userController", () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     } as unknown as Response;
+
     await getUserById(req, res);
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({ error: "User not found" });
+  });
+  it("should update a user", async () => {
+    const updatedUser = {
+      name: "Raymond Lee",
+      email: "raymond.lee@example.com",
+      address: {
+        street: "789 Elm Ct",
+        city: "Otherville",
+        state: "TX",
+        zipCode: "54321",
+      },
+    };
+    const req = {
+      params: {
+        id: "2",
+      },
+      body: {
+        ...updatedUser,
+      },
+    } as Request<IParams>;
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    const newUserList = twoUsersStub.map((user) => {
+      if (user.id === 2) {
+        return { id: 2, ...updatedUser };
+      }
+      return user;
+    });
+    await updateUser(req, res);
+
+    expect(saveUsers).toHaveBeenCalledWith(newUserList);
+    expect(res.json).toHaveBeenCalledWith({ id: 2, ...updatedUser });
   });
 });

@@ -20,7 +20,10 @@
   "prestart": "npm run build",
   "start": "node dist/index.js",
   "start:dev": "nodemon -e ts -w ./src -x npm run serve",
-  "serve": "ts-node src/index.ts"
+  "serve": "ts-node src/index.ts",
+  "test": "jest",
+  "test:watch": "jest --watch",
+  "prepare": "husky"
 }
 ```
 
