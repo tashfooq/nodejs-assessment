@@ -8,3 +8,7 @@ export interface User {
     zipcode: string;
   };
 }
+
+export interface UserWithId extends User {
+  id: number;
+}

@@ -39,3 +39,7 @@ Didn't want all the logic to be in the controller
 ### Moving users.json to data folder
 
 Treating it as a database file and not part of the source code
+
+### Taking Test Driven Development approach
+
+Decided to write tests first with expected outcomes to see if existing logic even works. Even if the existing logic is correct it may still be written better. Need to ensure that the outcomes are the same after refactoring in this case as well.

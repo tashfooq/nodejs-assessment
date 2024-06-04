@@ -1,13 +1,11 @@
 import { Request, Response } from "express";
-import { createUser } from "../src/userController";
+import { createUser, getUserById } from "../src/userController";
 import { twoUsersStub } from "./users.stub";
-import { getUsers } from "../src/userService";
 
 // mocking out the userService module
 jest.mock("../src/userService", () => ({
-  // getUsers: jest.fn().mockResolvedValue(twoUsersStub),
   getUsers: jest.fn(),
-  saveUsers: jest.fn((users) => Promise.resolve(users)),
+  saveUsers: jest.fn(),
 }));
 
 beforeEach(() => {
@@ -18,7 +16,9 @@ beforeEach(() => {
   );
 });
 
-import { saveUsers } from "../src/userService";
+import { getUsers, saveUsers } from "../src/userService";
+import { IParams } from "../src/types/params";
+
 describe("userController", () => {
   it("should create a new user", async () => {
     const newUser = {
@@ -49,5 +49,32 @@ describe("userController", () => {
       ...twoUserStubClone,
       expectedNewUser,
     ]);
+  });
+  it("should return user by id", async () => {
+    const req = {
+      params: {
+        id: "2",
+      },
+    } as Request<IParams>;
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+    await getUserById(req, res);
+    expect(res.json).toHaveBeenCalledWith(twoUsersStub[1]);
+  });
+  it("should return 404 if user id does not exist", async () => {
+    const req = {
+      params: {
+        id: "4",
+      },
+    } as Request<IParams>;
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+    await getUserById(req, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ error: "User not found" });
   });
 });

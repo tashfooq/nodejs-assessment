@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { getUsers, saveUsers } from "./userService";
+import { IParams } from "./types/params";
+import { UserWithId } from "./types/user";
 
 export const getAllUsers = async (res: Response) => {
   const users = await getUsers();
@@ -16,25 +18,26 @@ export const createUser = async (req: Request, res: Response) => {
   res.status(201).json(newUser);
 };
 
-// const getUserById = async (req: Request, res: Response) => {
-//   const users = await getUsers();
-//   const userId = parseInt(req.params.id);
-//   let user;
-//
-//   for (let i = 0; i < users.length; i++) {
-//     if (users[i].id === userId) {
-//       user = users[i];
-//       break;
-//     }
-//   }
-//
-//   if (user) {
-//     res.json(user);
-//   } else {
-//     res.status(404).json({ error: "User not found" });
-//   }
-// };
-//
+export const getUserById = async (req: Request<IParams>, res: Response) => {
+  const users = await getUsers();
+  const userId = parseInt(req.params.id);
+  // let user;
+  //
+  // for (let i = 0; i < users.length; i++) {
+  //   if (users[i].id === userId) {
+  //     user = users[i];
+  //     break;
+  //   }
+  // }
+  const user = users.find((u: UserWithId) => u.id === userId);
+
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404).json({ error: "User not found" });
+  }
+};
+
 // const updateUser = (req, res) => {
 //   const users = getUsers();
 //   const userId = parseInt(req.params.id);
